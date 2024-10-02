@@ -4,44 +4,69 @@ function getComputerChoice() {
   return Math.floor(Math.random() * 3);
 }
 
-function getHumanChoice() {
-  return prompt("Rock [1], Paper [2], or scissors [3]?");
-}
+const stats = document.getElementById("msg");
+let newLine = document.createElement("p");
+let record = document.createElement("p");
+stats.appendChild(newLine);
+stats.appendChild(record);
 
 let humanScore = 0;
 let computerScore = 0;
 
-function playRound(human, cpu) {
-  console.log(
-    `It was your ${options[human]} versus the computer's ${options[cpu]}`,
-  );
+function playRound() {
+  let human = options.indexOf(event.target.textContent);
+  let cpu = getComputerChoice();
 
   if (cpu == human) {
-    console.log("It was a tie!");
+    let message = "It was a tie!";
+    updateDisplay(human, cpu, message);
   } else if (cpu + 1 == human) {
-    console.log("You beat the computer!");
-    return 1;
+    let message = "You won!";
+    humanScore++;
+    updateDisplay(human, cpu, message);
   } else if (human + 1 == cpu) {
-    console.log("You lost to the console.");
-    return -1;
+    let message = "You lost.";
+    computerScore++;
+    updateDisplay(human, cpu, message);
   } else if (cpu + 2 == human) {
-    console.log("You lost to the console.");
-    return -1;
+    let message = "You lost.";
+    computerScore++;
+    updateDisplay(human, cpu, message);
   } else if (human + 2 == cpu) {
-    console.log("You beat the computer!");
-    return 1;
+    let message = "You won!";
+    humanScore++;
+    updateDisplay(human, cpu, message);
   }
 }
 
-function playGame() {
-  for (let i = 0; i < 5; i++) {
-    const humanSelection = getHumanChoice();
-    const computerSelection = getComputerChoice();
-    let win = playRound(humanSelection, computerSelection);
-    if (win == 1) humanScore++;
-    else if (win == -1) computerScore++;
-    console.log(
-      `The score of this game is your ${humanScore} wins to the computer's ${computerScore} wins`,
-    );
+let updateDisplay = (humanChoice, cpuChoice, userMsg) => {
+  newLine.textContent = `It was your ${options[humanChoice]} versus the computer's ${options[cpuChoice]}. ${userMsg}`;
+
+  if (humanScore == 5) {
+    record.textContent = `You beat the computer ${humanScore} to ${computerScore}. Click an option to restart.`;
+    humanScore = 0;
+    computerScore = 0;
+    return;
+  } else if (computerScore == 5) {
+    record.textContent = `The computer beat you ${humanScore} to ${computerScore}. Click an option to restart.`;
+    humanScore = 0;
+    computerScore = 0;
+    return;
   }
-}
+
+  if (humanScore > computerScore) {
+    record.textContent = `You are currently beating the computer ${humanScore} to ${computerScore}`;
+  } else if (humanScore < computerScore) {
+    record.textContent = `You are currently losing to the computer ${humanScore} to ${computerScore}`;
+  } else {
+    record.textContent = `You and the computer are currently tied ${humanScore} to ${computerScore}`;
+  }
+};
+
+const rock = document.getElementById("rock");
+const paper = document.getElementById("paper");
+const scissors = document.getElementById("scissors");
+
+rock.addEventListener("click", playRound);
+paper.addEventListener("click", playRound);
+scissors.addEventListener("click", playRound);
